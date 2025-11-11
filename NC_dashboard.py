@@ -247,32 +247,6 @@ st.dataframe(
     use_container_width=True,
     hide_index=True
 )
-
-# ==========================
-# SECTION 3: Ages
-# ==========================
-#st.subheader("Age Distribution")
-
-#def age_brackets(frame):
-    #f = frame[frame["is_inworks"]].copy()
-    #f = f[f["created_date"].notna()].copy()
-    #f["age_days"] = (TODAY - f["created_date"]).dt.days
-    #age_data = {
-        #"Item": ["Older than 2 years", "Older than 1 year"],
-        #"Number": [
-            #int(f.loc[f["age_days"] > 730, "nc_number"].nunique()),
-            #int(f.loc[f["age_days"] > 365, "nc_number"].nunique())
-       # ]
-    #}
-   # return pd.DataFrame(age_data)
-
-#col_age1, col_age2 = st.columns(2)
-#with col_age1:
-    #st.markdown("**Global**")
-    #st.table(age_brackets(df_win))
-#with col_age2:
-    #st.markdown("**Site 1100**")
-    #st.table(age_brackets(df_win[df_win["responsible_site"] == "1100"]))
 # ==========================
 # TABLE: Next Overdue (Due in next 2 months)
 # ==========================
@@ -340,6 +314,31 @@ st.dataframe(
     hide_index=True
 )
 
+# ==========================
+# SECTION 3: Ages
+# ==========================
+#st.subheader("Age Distribution")
+
+#def age_brackets(frame):
+    #f = frame[frame["is_inworks"]].copy()
+    #f = f[f["created_date"].notna()].copy()
+    #f["age_days"] = (TODAY - f["created_date"]).dt.days
+    #age_data = {
+        #"Item": ["Older than 2 years", "Older than 1 year"],
+        #"Number": [
+            #int(f.loc[f["age_days"] > 730, "nc_number"].nunique()),
+            #int(f.loc[f["age_days"] > 365, "nc_number"].nunique())
+       # ]
+    #}
+   # return pd.DataFrame(age_data)
+
+#col_age1, col_age2 = st.columns(2)
+#with col_age1:
+    #st.markdown("**Global**")
+    #st.table(age_brackets(df_win))
+#with col_age2:
+    #st.markdown("**Site 1100**")
+    #st.table(age_brackets(df_win[df_win["responsible_site"] == "1100"]))
 # ==========================
 # SECTION 4: Annual Trends
 # ==========================
