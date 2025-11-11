@@ -273,6 +273,72 @@ st.dataframe(
 #with col_age2:
     #st.markdown("**Site 1100**")
     #st.table(age_brackets(df_win[df_win["responsible_site"] == "1100"]))
+# ==========================
+# TABLE: Next Overdue (Due in next 2 months)
+# ==========================
+st.subheader("Next Overdue (Due within 2 months)")
+
+# Definir rango de fechas (desde hoy hasta 60 días adelante)
+next_due_start = TODAY
+next_due_end = TODAY + pd.Timedelta(days=60)
+
+# Filtrar NC INWORKS que vencen dentro de los próximos 2 meses
+upcoming_due = finw.loc[
+    (finw["is_inworks"]) &
+    (finw["calculated_completion_date"].notna()) &
+    (finw["calculated_completion_date"] >= next_due_start) &
+    (finw["calculated_completion_date"] <= next_due_end)
+].copy()
+
+# Ordenar por fecha de vencimiento (más próxima primero)
+upcoming_due = upcoming_due.sort_values("calculated_completion_date")
+
+# Unir información adicional desde df_full
+df_upcoming = (
+    df_full[df_full["nc_number"].isin(upcoming_due["nc_number"])]
+    .drop_duplicates(subset=["nc_number"])
+    .merge(
+        df_unique[["nc_number", "planned_closure_date", "extension_count"]],
+        on="nc_number",
+        how="left"
+    )
+)
+
+df_upcoming["extension_count"] = df_upcoming["extension_count"].fillna(0).astype(int)
+
+# Seleccionar columnas finales
+df_upcoming = df_upcoming[[
+    "nc_number",
+    "title",
+    "nc_owner",
+    "nc_coordinator",
+    "nc_related_to",
+    "responsible_site",
+    "created_date",
+    "planned_closure_date",
+    "extension_count"
+]].rename(columns={
+    "nc_number": "NC Number",
+    "title": "Title",
+    "nc_owner": "NC Owner",
+    "nc_coordinator": "NC Coordinator",
+    "nc_related_to": "NC Related To",
+    "responsible_site": "Responsible Site",
+    "created_date": "Initiation Date",
+    "planned_closure_date": "Closed Date (planned)",
+    "extension_count": "Due date extensions"
+})
+
+# Formato de fechas
+df_upcoming["Initiation Date"] = pd.to_datetime(df_upcoming["Initiation Date"], errors="coerce").dt.strftime("%d-%b-%y")
+df_upcoming["Closed Date (planned)"] = pd.to_datetime(df_upcoming["Closed Date (planned)"], errors="coerce").dt.strftime("%d-%b-%y")
+
+# Mostrar tabla final ordenada por fecha más próxima
+st.dataframe(
+    df_upcoming.sort_values("Closed Date (planned)").reset_index(drop=True),
+    use_container_width=True,
+    hide_index=True
+)
 
 # ==========================
 # SECTION 4: Annual Trends
